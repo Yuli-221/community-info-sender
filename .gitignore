@@ -1,0 +1,48 @@
+# Eclipse specific files
+/.metadata
+/.eclipse
+/.project
+/.classpath
+/.settings/
+
+# Eclipse workspace specific files
+/*.launch
+
+# Java compiled files
+*.class
+
+# Log files
+*.log
+
+# Temporary files
+*.bak
+*.swp
+*.tmp
+
+# Eclipse specific local configuration files
+/.loadpath
+/.project
+/.classpath
+
+# IDE workspace folder
+.idea/
+
+# Maven specific files
+target/
+
+# Gradle specific files
+.gradle/
+build/
+
+# IntelliJ IDEA files (in case you work with both Eclipse and IntelliJ)
+.idea/
+*.iml
+
+# Operating system files
+Thumbs.db
+Desktop.ini
+
+# Other ignored files
+*.jar
+*.war
+*.ear

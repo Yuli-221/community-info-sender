@@ -149,7 +149,7 @@ Maven 載入函示庫宣告 pom.xml
 ```
 
 ## 程式流程控制
-* 為保護密碼，透過 args 在運行透過指令方式帶入
+* 為保護密碼，運行透過 args 在指令方式帶入
 * 讀取 mail-content.txt Mail 內容
 * 
 ```java

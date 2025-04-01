@@ -31,10 +31,9 @@ Maven 載入函示庫宣告 pom.xml
 * 進入 Google 帳戶
 * 選擇安全性 > 點選兩步驟驗證
 ![image](https://hackmd.io/_uploads/r1Uxd0uTJl.png)
-![image](https://hackmd.io/_uploads/HkwRauF6kx.png)
-
+![image](https://hackmd.io/_uploads/ryo7O0dTJe.png)
 * 搜尋應用程式密碼並產生
-![image](https://hackmd.io/_uploads/HyUfj0Opkg.png)
+![image](https://hackmd.io/_uploads/HkwRauF6kx.png)
 
 * 發送 GMail 程式碼
 * 採用 jakarta.mail.* 相關套件發送 Mail

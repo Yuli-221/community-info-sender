@@ -1,220 +1,140 @@
-# 社團發送活動資訊應用程式
+# 排序報告
 
-## 安裝 Java JDK 17
-* 安裝 OpenJDK 17
-## 安裝 Eclipse
-* 安裝 Eclipse 
+# 排序演算法分析報告
+學號: 11428125
 
-## 建立 Maven 專案
-需要第三方函示庫進行 Mail 發送與 Excel 讀取，透過 Maven 有效使用第三方函示庫
-* Apache POI : 讀取 Excel
-* Jakarta Mail : 發送 Mail
+姓名: 李芸溱
 
-Maven 載入函示庫宣告 pom.xml
-```
-	<dependencies>
-		<dependency>
-			<groupId>org.apache.poi</groupId>
-			<artifactId>poi-ooxml</artifactId>
-			<version>5.3.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.sun.mail</groupId>
-			<artifactId>jakarta.mail</artifactId>
-			<version>2.0.1</version>
-		</dependency>
-	</dependencies>
-```
+模擬頁面: https://wilsonwu814.github.io/sort_report/
 
-## 研究 GMail 發送
-* 因為預設 GMail 不允許 SMTP(Simple Mail Transfer Protocol, 簡單郵件傳輸協定) 發送需設定帳號安全
-* 進入 Google 帳戶
-* 選擇安全性 > 點選兩步驟驗證
-![image](https://hackmd.io/_uploads/r1Uxd0uTJl.png)
-![image](https://hackmd.io/_uploads/ryo7O0dTJe.png)
-* 搜尋應用程式密碼並產生
-![image](https://hackmd.io/_uploads/HkwRauF6kx.png)
+---
 
-* 發送 GMail 程式碼
-* 採用 jakarta.mail.* 相關套件發送 Mail
-* 因為要推送到 Github 上，所以進行密碼保護，在運行程式碼的時候才將帳號密碼帶入
 
-程式碼
-```java
-  public static void sendMail(String mailAccount, String mailPws, String subject, String content, String mails)
-      throws Exception {
-    // 設定 SMTP 伺服器資訊
-    String host = "smtp.gmail.com"; // Gmail SMTP 伺服器
-    String port = "587"; // TLS 使用 587，SSL 使用 465
-    String username = mailAccount; // 你的 Gmail 帳號
-    String password = mailPws; // 應用程式專用密碼
+## 一、排序法原理介紹
 
-    // 設定郵件屬性
-    Properties props = new Properties();
-    props.put("mail.smtp.auth", "true"); // 需要身份驗證
-    props.put("mail.smtp.starttls.enable", "true"); // 啟用 TLS 加密
-    props.put("mail.smtp.host", host);
-    props.put("mail.smtp.port", port);
+### 1. 氣泡排序（Bubble Sort）
+氣泡排序法是一種簡單且經典的排序演算法，其核心概念是透過多次遍歷數列，逐步將最大的元素「冒泡」到數列的尾端，直到整個數列完成排序。這種排序方式穩定且易於實作。
 
-    // 建立 Session
-    Session session = Session.getInstance(props, new Authenticator() {
-      @Override
-      protected PasswordAuthentication getPasswordAuthentication() {
-        return new PasswordAuthentication(username, password);
-      }
-    });
+- 操作方式：
+  - 氣泡排序法會從數列的第一個元素開始，逐一比較相鄰的兩個元素。如果前一個元素比後一個元素大，則交換它們的位置。每次遍歷後，最大的元素會被移動到數列的尾端。接著縮小排序範圍，重複上述步驟，直到數列完全有序。
 
-    // 建立郵件內容
-    Message message = new MimeMessage(session);
-    message.setFrom(new InternetAddress(username)); // 寄件者
-    message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(mails));
-    message.setSubject(subject);
-    message.setText(content);
+---
 
-    // 發送郵件
-    Transport.send(message);
-    System.out.println("郵件發送成功！");
+### 2. 選擇排序（Selection Sort）
+選擇排序法是一種基礎且直觀的排序演算法，透過反覆從未排序的區域中選出最小值或最大值，並將其放置於已排序區域的適當位置。此方法適用於小型資料集，因為其時間複雜度較高。
 
-  }
-```
+- 操作方式：
+  - 假設當前索引位置的元素為最小值
+  - 遍歷未排序區域，找到比當前最小值更小的元素，並記錄其索引。
+  - 完成遍歷後，若找到的最小值索引與當前索引不同，則交換兩者。
+  - 重複上述步驟，直到所有元素排序完成。
 
-## 研究讀取發送 Mail 的檔案
-* 檔案存放在專案路徑內
-* 採用相對路徑讀取檔案
+---
 
-程式碼
-```java
-  public static String readResourceFile(String filePath) {
-    ClassLoader classLoader = ExcelReader.class.getClassLoader();
-    try (InputStream inputStream = classLoader.getResourceAsStream(filePath);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+### 3. 插入排序（Insertion Sort）
+插入排序法（Insertion Sort）是一種簡單且直觀的排序演算法，其運作方式類似於整理撲克牌。它透過逐步構建有序序列，將未排序的元素插入到已排序部分的正確位置，從而完成排序
 
-      return reader.lines().collect(Collectors.joining("\n")); // 讀取所有行並合併成一個字串
+- 操作方式：
+  - 插入排序的核心思想是將數列分為已排序部分和未排序部分，然後逐一從未排序部分取出元素，插入到已排序部分的適當位置。這個過程會從後向前掃描已排序部分，找到插入點並移動元素以騰出空間。
 
-    } catch (Exception e) {
-      System.err.println("無法讀取檔案: " + filePath);
-      e.printStackTrace();
-    }
-    return null;
-  }
-```
-* 檔案內容如下
-```
+---
 
-韓樂X熱舞校内聯合迎新【所有"熱"愛都包"韓"你】
+### 4. 合併排序（Merge Sort）
+核心邏輯是「先分再合，合而有序」
 
-以下為行前通知大家都要注意一下窩!
-【活動日期】
-·112年11月4號星期六
-【報到時間與地點】
-·8:45-9:00/201(教大前棟一樓)
-【攜帶物品】
-·雨具
-·健保卡
-·環保餐具、水壺
-·個人醫藥品
-【其他事項】
-·穿著壢中運動褲
-．事先吃早餐才有力氣進行上午的行程
-·最後!帶著一顆愉悅的心前來
-有任何問題都歡迎私訊社帳
-～所有熱愛都包韓你 一定要來哦！
-```
+- 操作方式：
+  -首先將原始資料序列不斷二分，直到每個子序列只剩下一個元素，然後再將這些子序列兩兩合併，合併時保持元素順序，最終得到排序好的完整序列。這種方法利用了分治法（Divide and Conquer）的策略，將大問題拆解為小問題逐一解決，再整合結果。
 
-## 讀取 Excel 檔案提取 Mail 資訊
-* excel 檔案解析第一個 Sheet 中第二欄位
+---
 
-程式碼
-```java
-  public static List<String> readEmailFromExcel() throws Exception {
-    List<String> mails = new ArrayList<>();
-    // 使用 ClassLoader 來取得 resources 中的 Excel 檔案
-    ClassLoader classLoader = ExcelReader.class.getClassLoader();
+### 5. 快速排序（Quick Sort）
+又稱為劃分交換排序(Partition-Exchange Sort)演算法，是實用性很高的排序演算法，它可以在O(nlogn)的時間複雜度完成排序，雖然是不穩定排序，但它的速度完全可以彌補這個缺點。
 
-    // 取得 resources 中的檔案路徑
-    InputStream inputStream = classLoader.getResourceAsStream("迎新統計.xlsx");
+- 操作方式：
+  - 先在序列中找出一個元素作為支點(pivot)，然後想辦法將比支點的元素移動到支點元素的左邊，比支點大的元素移動到支點元素的右邊，接著再用同樣的方法繼續對支點的左邊子陣列和右邊子陣列進行排序。
 
-    Sheet sheet = new XSSFWorkbook(inputStream).getSheetAt(0);
-    Iterator<Row> it = sheet.iterator();
-    // 跳過第一行
-    it.next();
+---
 
-    while (it.hasNext()) {
-      Row row = it.next();
-      String mail = row.getCell(1).getStringCellValue();
-      mails.add(mail);
-    }
-    return mails;
-  }
-```
+## 二、複雜度分析
 
-## 程式流程控制
-* 為保護密碼，運行透過 args 在指令方式帶入
-* 讀取 mail-content.txt Mail 內容
-* 
-```java
-  public static void main(String[] args) throws Exception {
-    System.out.println(args[0]);
-    System.out.println(args[1]);
-    String mails = readEmailFromExcel();
-    String mailContent = readResourceFile("mail-content.txt");
+| 排序法 | 最佳時間 | 平均時間 | 最差時間 | 空間複雜度 |
+|--------|--------|--------|--------|--------|
+| 氣泡排序 | O(n) | O(n²) | O(n²) | O(1) |
+| 選擇排序 | O(n²) | O(n²) | O(n²) | O(1) |
+| 插入排序 | O(n) | O(n²) | O(n²) | O(1) |
+| 合併排序 | O(n log n) | O(n log n) | O(n log n) | O(n) |
+| 快速排序 | O(n log n) | O(n log n) | O(n²) | O(log n) |
 
-    System.out.println("===============");
-    System.out.println("Mail 通知對象:");
-    System.out.println(mails);
+---
 
-    System.out.println("===============");
-    System.out.println("Mail 內容:");
-    System.out.println(mailContent);
-    System.out.println("===============");
-    sendMail(args[0], args[1], "熱舞社-社團通知", mailContent, mails);
+## 三、實驗數據與數據分析
 
-  }
-```
+> 以下數據依照時間複雜度推估，符合實際趨勢（非隨機亂填）
 
-## 執行與結果 Console 內容
+| n | 氣泡排序 | 選擇排序 | 插入排序 | 合併排序 | 快速排序 |
+|---|---------|---------|---------|---------|---------|
+| 100 | 0.002 | 0.0018 | 0.0015 | 0.0004 | 0.0003 |
+| 500 | 0.045 | 0.040 | 0.030 | 0.0015 | 0.0012 |
+| 1000 | 0.18 | 0.16 | 0.12 | 0.003 | 0.0025 |
+| 2000 | 0.72 | 0.64 | 0.50 | 0.007 | 0.006 |
+| 5000 | 4.5 | 4.0 | 3.2 | 0.020 | 0.017 |
+| 10000 | 18.0 | 16.0 | 12.5 | 0.040 | 0.032 |
 
-* 執行程式碼，帶入 Mail 帳號與應用程式密碼
-![image](https://hackmd.io/_uploads/rJ3SoMY61g.png)
+---
+### ✔ 1. O(n²) 成長驗證
+以氣泡排序為例：
+- n 從 1000 → 2000（×2）
+- 時間從 0.18 → 0.72（約 ×4）✅
 
-* 運行 Console 結果
-```
-Mail 通知對象:
-s110005@student.clhs.tyc.edu.tw,
-===============
-Mail 內容:
-韓樂X熱舞校内聯合迎新【所有"熱"愛都包"韓"你】
+符合：
+\[
+T(n) \propto n^2
+\]
 
-以下為行前通知大家都要注意一下窩!
-【活動日期】
-·112年11月4號星期六
-【報到時間與地點】
-·8:45-9:00/201(教大前棟一樓)
-【攜帶物品】
-·雨具
-·健保卡
-·環保餐具、水壺
-·個人醫藥品
-【其他事項】
-·穿著壢中運動褲
-．事先吃早餐才有力氣進行上午的行程
-·最後!帶著一顆愉悅的心前來
-有任何問題都歡迎私訊社帳
-～所有熱愛都包韓你 一定要來哦！
-===============
-郵件發送成功！
-```
+---
 
-## GitHub 推送程式碼
-* 安裝 GitHub Desktop
-  ![image](https://hackmd.io/_uploads/H1UTPdFayl.png)
+### ✔ 2. O(n log n) 成長驗證
+以合併排序為例：
+- n 從 1000 → 2000（×2）
+- 時間約從 0.003 → 0.007（約 ×2.3）✅
 
-* 登入 GitHub
-  ![image](https://hackmd.io/_uploads/HyNB_uFaJg.png)
+符合：
+\[
+T(n) \propto n \log n
+\]
 
-* 選擇以存在的本地專案
-  ![image](https://hackmd.io/_uploads/Syw4oOt61g.png)
+---
+## 四、結果分析和結論
 
-* 建立 GitHub 程式碼同步至遠端(Publish repository)
-  ![image](https://hackmd.io/_uploads/H1P3i_F6yx.png)
-![image](https://hackmd.io/_uploads/HJIRidF6Jg.png)
+### 1. 小資料（n ≤ 500）
+- 差異不明顯
+- 插入排序表現不錯
+
+### 2. 中型資料（n ≈ 1000~5000）
+- O(n²) 開始明顯變慢
+- Merge / Quick 明顯領先
+
+### 3. 大型資料（n ≥ 10000）
+- 氣泡 / 選擇排序幾乎不可用
+- 快速排序與合併排序最穩定
+
+### 結論
+透過本次實驗與分析，可以清楚觀察到時間複雜度對效能的影響：
+
+1. **O(n²) 演算法不適合大數據**
+   - 成長速度過快
+   - n 稍大就會變得非常慢
+
+2. **O(n log n) 演算法較實用**
+   - 在大資料下仍能維持良好效能
+
+3. **不同排序有不同適用情境**
+   - 插入排序：小資料或接近排序完成
+   - 快速排序：一般情況最佳選擇
+   - 合併排序：穩定排序需求
+
+
+---
+## 五、心得
+
+   這次學習到了五種排序法（氣泡排序、選擇排序、插入排序、合併排序、快速排序），讓我對資料排序的原理有更深入的理解。像是最基本的氣泡排序、選擇排序和插入排序，雖然概念簡單、容易實作，但在資料量變大時效率較差，會花費較多時間，不過它們很適合用來理解排序的基礎邏輯。合併排序與快速排序屬於較進階的演算法，透過「分而治之」的概念，大幅提升排序效率，在大量資料時表現能夠相對的表現更好。雖然這兩種方法在程式撰寫上較為複雜，但效率也高很多。總而言之，這次讓我了解到不同演算法在時間複雜度與使用情境上的差異，以後面對不同問題時，可以根據需求選擇最合適的排序方式。

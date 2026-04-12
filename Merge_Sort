@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>合併排序動畫</title>
+<style>
+    body {
+        text-align: center;
+        font-family: Arial;
+    }
+
+    #container {
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        height: 300px;
+        margin-top: 20px;
+    }
+
+    .bar {
+        width: 20px;
+        margin: 2px;
+        background-color: steelblue;
+    }
+
+    .active {
+        background-color: red;
+    }
+
+    .merge {
+        background-color: orange;
+    }
+
+    .sorted {
+        background-color: green;
+    }
+
+    button {
+        margin: 10px;
+        padding: 10px 20px;
+    }
+</style>
+</head>
+
+<body>
+
+<h2>合併排序動畫（Merge Sort）</h2>
+
+<button onclick="generateArray()">重新生成</button>
+<button onclick="startMergeSort()">開始排序</button>
+
+<div id="container"></div>
+
+<script>
+let array = [];
+let container = document.getElementById("container");
+
+function generateArray() {
+    container.innerHTML = "";
+    array = [];
+
+    for (let i = 0; i < 30; i++) {
+        let value = Math.floor(Math.random() * 250) + 10;
+        array.push(value);
+
+        let bar = document.createElement("div");
+        bar.classList.add("bar");
+        bar.style.height = value + "px";
+
+        container.appendChild(bar);
+    }
+}
+
+async function startMergeSort() {
+    await mergeSort(0, array.length - 1);
+
+    let bars = document.getElementsByClassName("bar");
+    for (let i = 0; i < bars.length; i++) {
+        bars[i].classList.add("sorted");
+    }
+}
+
+async function mergeSort(left, right) {
+    if (left >= right) return;
+
+    let mid = Math.floor((left + right) / 2);
+
+    await mergeSort(left, mid);
+    await mergeSort(mid + 1, right);
+
+    await merge(left, mid, right);
+}
+
+async function merge(left, mid, right) {
+    let bars = document.getElementsByClassName("bar");
+
+    let temp = [];
+    let i = left;
+    let j = mid + 1;
+
+    // 標記正在合併區間
+    for (let k = left; k <= right; k++) {
+        bars[k].classList.add("merge");
+    }
+
+    while (i <= mid && j <= right) {
+        bars[i].classList.add("active");
+        bars[j].classList.add("active");
+
+        await sleep(80);
+
+        if (array[i] < array[j]) {
+            temp.push(array[i++]);
+        } else {
+            temp.push(array[j++]);
+        }
+
+        bars[i - 1]?.classList.remove("active");
+        bars[j - 1]?.classList.remove("active");
+    }
+
+    while (i <= mid) {
+        temp.push(array[i++]);
+    }
+
+    while (j <= right) {
+        temp.push(array[j++]);
+    }
+
+    // 回填資料
+    for (let k = left; k <= right; k++) {
+        array[k] = temp[k - left];
+        bars[k].style.height = array[k] + "px";
+
+        await sleep(50);
+    }
+
+    // 移除標記
+    for (let k = left; k <= right; k++) {
+        bars[k].classList.remove("merge");
+    }
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// 初始化
+generateArray();
+</script>
+
+</body>
+</html>

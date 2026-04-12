@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>氣泡排序動畫</title>
+<style>
+    body {
+        text-align: center;
+        font-family: Arial;
+    }
+
+    #container {
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        height: 300px;
+        margin-top: 20px;
+    }
+
+    .bar {
+        width: 20px;
+        margin: 2px;
+        background-color: steelblue;
+    }
+
+    .active {
+        background-color: red;
+    }
+
+    .sorted {
+        background-color: green;
+    }
+
+    button {
+        margin: 10px;
+        padding: 10px 20px;
+    }
+</style>
+</head>
+
+<body>
+
+<h2>氣泡排序動畫（Bubble Sort）</h2>
+
+<button onclick="generateArray()">重新生成</button>
+<button onclick="bubbleSort()">開始排序</button>
+
+<div id="container"></div>
+
+<script>
+let array = [];
+let container = document.getElementById("container");
+
+function generateArray() {
+    container.innerHTML = "";
+    array = [];
+
+    for (let i = 0; i < 30; i++) {
+        let value = Math.floor(Math.random() * 250) + 10;
+        array.push(value);
+
+        let bar = document.createElement("div");
+        bar.classList.add("bar");
+        bar.style.height = value + "px";
+
+        container.appendChild(bar);
+    }
+}
+
+async function bubbleSort() {
+    let bars = document.getElementsByClassName("bar");
+
+    for (let i = 0; i < array.length; i++) {
+        for (let j = 0; j < array.length - i - 1; j++) {
+
+            bars[j].classList.add("active");
+            bars[j+1].classList.add("active");
+
+            await sleep(50);
+
+            if (array[j] > array[j+1]) {
+                // swap
+                let temp = array[j];
+                array[j] = array[j+1];
+                array[j+1] = temp;
+
+                bars[j].style.height = array[j] + "px";
+                bars[j+1].style.height = array[j+1] + "px";
+            }
+
+            bars[j].classList.remove("active");
+            bars[j+1].classList.remove("active");
+        }
+        bars[array.length - i - 1].classList.add("sorted");
+    }
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// 初始化
+generateArray();
+</script>
+
+</body>
+</html>

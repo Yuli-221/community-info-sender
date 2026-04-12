@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>選擇排序動畫</title>
+<style>
+    body {
+        text-align: center;
+        font-family: Arial;
+    }
+
+    #container {
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        height: 300px;
+        margin-top: 20px;
+    }
+
+    .bar {
+        width: 20px;
+        margin: 2px;
+        background-color: steelblue;
+    }
+
+    .active {
+        background-color: red;
+    }
+
+    .min {
+        background-color: orange;
+    }
+
+    .sorted {
+        background-color: green;
+    }
+
+    button {
+        margin: 10px;
+        padding: 10px 20px;
+    }
+</style>
+</head>
+
+<body>
+
+<h2>選擇排序動畫（Selection Sort）</h2>
+
+<button onclick="generateArray()">重新生成</button>
+<button onclick="selectionSort()">開始排序</button>
+
+<div id="container"></div>
+
+<script>
+let array = [];
+let container = document.getElementById("container");
+
+function generateArray() {
+    container.innerHTML = "";
+    array = [];
+
+    for (let i = 0; i < 30; i++) {
+        let value = Math.floor(Math.random() * 250) + 10;
+        array.push(value);
+
+        let bar = document.createElement("div");
+        bar.classList.add("bar");
+        bar.style.height = value + "px";
+
+        container.appendChild(bar);
+    }
+}
+
+async function selectionSort() {
+    let bars = document.getElementsByClassName("bar");
+
+    for (let i = 0; i < array.length; i++) {
+        let minIndex = i;
+        bars[minIndex].classList.add("min");
+
+        for (let j = i + 1; j < array.length; j++) {
+
+            bars[j].classList.add("active");
+            await sleep(50);
+
+            if (array[j] < array[minIndex]) {
+                bars[minIndex].classList.remove("min");
+                minIndex = j;
+                bars[minIndex].classList.add("min");
+            }
+
+            bars[j].classList.remove("active");
+        }
+
+        // swap
+        let temp = array[i];
+        array[i] = array[minIndex];
+        array[minIndex] = temp;
+
+        bars[i].style.height = array[i] + "px";
+        bars[minIndex].style.height = array[minIndex] + "px";
+
+        bars[minIndex].classList.remove("min");
+        bars[i].classList.add("sorted");
+    }
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// 初始化
+generateArray();
+</script>
+
+</body>
+</html>

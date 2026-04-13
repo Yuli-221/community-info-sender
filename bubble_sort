@@ -2,106 +2,59 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<title>氣泡排序動畫</title>
+<title>氣泡排序</title>
 <style>
-    body {
-        text-align: center;
-        font-family: Arial;
-    }
-
-    #container {
-        display: flex;
-        justify-content: center;
-        align-items: flex-end;
-        height: 300px;
-        margin-top: 20px;
-    }
-
-    .bar {
-        width: 20px;
-        margin: 2px;
-        background-color: steelblue;
-    }
-
-    .active {
-        background-color: red;
-    }
-
-    .sorted {
-        background-color: green;
-    }
-
-    button {
-        margin: 10px;
-        padding: 10px 20px;
-    }
+body { text-align:center; }
+#array { display:flex; align-items:flex-end; height:300px; }
+.bar { width:10px; margin:1px; background:blue; }
+.active { background:red; }
 </style>
 </head>
 
 <body>
-
-<h2>氣泡排序動畫（Bubble Sort）</h2>
-
-<button onclick="generateArray()">重新生成</button>
-<button onclick="bubbleSort()">開始排序</button>
-
-<div id="container"></div>
+<h1>氣泡排序</h1>
+<button onclick="generate()">重新產生</button>
+<button onclick="bubbleSort()">開始</button>
+<div id="array"></div>
 
 <script>
-let array = [];
-let container = document.getElementById("container");
+let arr=[], delay=30;
 
-function generateArray() {
-    container.innerHTML = "";
-    array = [];
+function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
 
-    for (let i = 0; i < 30; i++) {
-        let value = Math.floor(Math.random() * 250) + 10;
-        array.push(value);
-
-        let bar = document.createElement("div");
-        bar.classList.add("bar");
-        bar.style.height = value + "px";
-
-        container.appendChild(bar);
+function generate(){
+    arr=[];
+    array.innerHTML="";
+    for(let i=0;i<50;i++){
+        let v=Math.floor(Math.random()*200)+10;
+        arr.push(v);
+        let d=document.createElement("div");
+        d.className="bar";
+        d.style.height=v+"px";
+        array.appendChild(d);
     }
 }
 
-async function bubbleSort() {
-    let bars = document.getElementsByClassName("bar");
+function update(a=[]){
+    let bars=document.querySelectorAll(".bar");
+    bars.forEach((b,i)=>{
+        b.style.height=arr[i]+"px";
+        b.classList.toggle("active", a.includes(i));
+    });
+}
 
-    for (let i = 0; i < array.length; i++) {
-        for (let j = 0; j < array.length - i - 1; j++) {
-
-            bars[j].classList.add("active");
-            bars[j+1].classList.add("active");
-
-            await sleep(50);
-
-            if (array[j] > array[j+1]) {
-                // swap
-                let temp = array[j];
-                array[j] = array[j+1];
-                array[j+1] = temp;
-
-                bars[j].style.height = array[j] + "px";
-                bars[j+1].style.height = array[j+1] + "px";
+async function bubbleSort(){
+    for(let i=0;i<arr.length;i++){
+        for(let j=0;j<arr.length-i-1;j++){
+            update([j,j+1]);
+            await sleep(delay);
+            if(arr[j]>arr[j+1]){
+                [arr[j],arr[j+1]]=[arr[j+1],arr[j]];
             }
-
-            bars[j].classList.remove("active");
-            bars[j+1].classList.remove("active");
         }
-        bars[array.length - i - 1].classList.add("sorted");
     }
 }
-
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-// 初始化
-generateArray();
+generate();
 </script>
-
 </body>
 </html>

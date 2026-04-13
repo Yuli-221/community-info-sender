@@ -5,7 +5,7 @@
 
 姓名: 李芸溱
 
-模擬頁面: https://wilsonwu814.github.io/sort_report/
+模擬頁面: https://yuli-221.github.io/community-info-sender/
 
 ---
 
